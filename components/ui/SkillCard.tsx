@@ -2,7 +2,10 @@
 import { motion } from "framer-motion";
 import type { Skill } from "@/types";
 
-interface SkillCardProps { skill: Skill; index: number; }
+interface SkillCardProps {
+  skill: Skill;
+  index: number;
+}
 
 export default function SkillCard({ skill, index }: SkillCardProps) {
   return (
@@ -11,13 +14,24 @@ export default function SkillCard({ skill, index }: SkillCardProps) {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
       viewport={{ once: true }}
-      className="bg-card p-4 rounded-lg border-l-[3px]"
-      style={{ borderLeftColor: skill.color }}
+      className="group bg-[#0d1117] p-5 rounded-lg border border-[#21262d] border-l-[3px] transition-all duration-300 hover:border-[#30363d]"
+      style={{
+        borderLeftColor: skill.color,
+        boxShadow: "none",
+      }}
+      whileHover={{
+        boxShadow: `0 0 20px ${skill.color}15, 0 0 40px ${skill.color}08`,
+      }}
     >
-      <div className="text-xs font-semibold mb-2 uppercase tracking-wider" style={{ color: skill.color }}>
+      <div
+        className="text-xs font-mono font-semibold mb-3 uppercase tracking-wider"
+        style={{ color: skill.color }}
+      >
         {skill.category}
       </div>
-      <div className="text-sm text-gray-300">{skill.items.join(" · ")}</div>
+      <div className="text-sm text-[#e6edf3] leading-relaxed">
+        {skill.items.join(" · ")}
+      </div>
     </motion.div>
   );
 }

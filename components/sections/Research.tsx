@@ -1,49 +1,121 @@
 "use client";
-import ScrollReveal from "@/components/ui/ScrollReveal";
+import { motion } from "framer-motion";
 import SectionHeading from "@/components/ui/SectionHeading";
 import type { Research as ResearchType, Certification } from "@/types";
 
-interface ResearchProps { research: ResearchType[]; certifications: Certification[]; }
+interface ResearchProps {
+  research: ResearchType[];
+  certifications: Certification[];
+}
 
 export default function Research({ research, certifications }: ResearchProps) {
   return (
-    <section id="research" className="py-20 md:py-28 bg-light-bg">
-      <div className="max-w-4xl mx-auto px-6">
-        <SectionHeading title="Research & Certifications" light />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <ScrollReveal>
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Research</h3>
-              <div className="space-y-4">
-                {research.map((r) => (
-                  <div key={r._id} className="bg-white p-4 rounded-lg border border-gray-100">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <div className="font-semibold text-gray-900 text-sm">{r.title}</div>
-                        <div className="text-xs text-gray-500 mt-1">{r.venue} — {r.year}</div>
-                      </div>
-                      <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${r.status === "published" ? "bg-green-50 text-green-700" : "bg-amber-50 text-amber-700"}`}>
-                        {r.status === "published" ? "Published" : "In Progress"}
+    <section id="research" className="py-20 md:py-28" style={{ background: "#030712" }}>
+      <div className="max-w-5xl mx-auto px-6">
+        <SectionHeading title="Research & Certifications" />
+
+        {/* Research papers as npm-style packages */}
+        <div className="mt-10">
+          <div className="flex items-center gap-2 mb-6">
+            <span className="text-xs font-mono px-2 py-1 rounded" style={{ background: "#21262d", color: "#f0883e" }}>
+              packages
+            </span>
+            <span className="text-sm font-mono" style={{ color: "#8b949e" }}>
+              {research.length} published
+            </span>
+          </div>
+          <div className="space-y-4">
+            {research.map((r, i) => (
+              <motion.div
+                key={r._id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="rounded-lg border p-5 group hover:border-[#58a6ff]/50 transition-colors"
+                style={{ borderColor: "#21262d", background: "#0d1117" }}
+              >
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-mono font-bold text-sm" style={{ color: "#58a6ff" }}>
+                        @research/
+                      </span>
+                      <span className="font-mono font-bold text-sm" style={{ color: "#e6edf3" }}>
+                        {r.title.toLowerCase().replace(/\s+/g, "-").slice(0, 40)}
                       </span>
                     </div>
-                    {r.link && (<a href={r.link} target="_blank" rel="noopener noreferrer" className="text-xs text-accent-teal hover:underline mt-2 inline-block">View Paper ↗</a>)}
+                    <p className="text-sm mt-1" style={{ color: "#e6edf3" }}>
+                      {r.title}
+                    </p>
+                    <div className="flex items-center gap-3 mt-2 text-xs font-mono" style={{ color: "#8b949e" }}>
+                      <span>registry: {r.venue}</span>
+                      <span>|</span>
+                      <span>{r.year}</span>
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Certifications</h3>
-              <div className="flex flex-wrap gap-2">
-                {certifications.map((cert) => (
-                  <span key={cert._id} className="text-xs px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full border border-gray-200" title={cert.name}>
-                    {cert.issuer} — {cert.name}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </ScrollReveal>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span
+                      className="text-xs font-mono px-2.5 py-1 rounded-full border"
+                      style={{
+                        color: r.status === "published" ? "#00ff41" : "#f0883e",
+                        borderColor: r.status === "published" ? "#00ff41" : "#f0883e",
+                        background: r.status === "published" ? "rgba(0,255,65,0.1)" : "rgba(240,136,62,0.1)",
+                      }}
+                    >
+                      {r.status === "published" ? "v1.0.0 stable" : "v0.x.x beta"}
+                    </span>
+                  </div>
+                </div>
+                {r.link && (
+                  <a
+                    href={r.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-mono mt-3 hover:underline"
+                    style={{ color: "#58a6ff" }}
+                  >
+                    $ npm info --registry {r.venue.toLowerCase().replace(/\s+/g, "-")} ↗
+                  </a>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* Certifications as badge grid */}
+        <div className="mt-14">
+          <div className="flex items-center gap-2 mb-6">
+            <span className="text-xs font-mono px-2 py-1 rounded" style={{ background: "#21262d", color: "#a371f7" }}>
+              badges
+            </span>
+            <span className="text-sm font-mono" style={{ color: "#8b949e" }}>
+              {certifications.length} earned
+            </span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {certifications.map((cert, i) => (
+              <motion.div
+                key={cert._id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
+                viewport={{ once: true }}
+                className="rounded-lg border p-4 hover:border-[#a371f7]/50 transition-colors"
+                style={{ borderColor: "#21262d", background: "#0d1117" }}
+              >
+                <div className="text-xs font-mono font-bold mb-1" style={{ color: "#a371f7" }}>
+                  {cert.issuer}
+                </div>
+                <div className="text-sm font-medium" style={{ color: "#e6edf3" }}>
+                  {cert.name}
+                </div>
+                <div className="text-xs font-mono mt-2" style={{ color: "#8b949e" }}>
+                  issued {cert.date}
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

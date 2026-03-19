@@ -2,35 +2,296 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== Design Tokens ===== */
+:root {
+  --bg-primary: #030712;
+  --bg-card: #0d1117;
+  --bg-card-hover: #161b22;
+  --border-primary: #21262d;
+  --border-card: #161b22;
+  --accent-green: #00ff41;
+  --accent-green-dim: #00cc33;
+  --accent-green-glow: rgba(0, 255, 65, 0.15);
+  --accent-blue: #58a6ff;
+  --accent-orange: #f0883e;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted: #484f58;
+  --grid-color: rgba(0, 255, 65, 0.04);
+  --grid-size: 32px;
+  --noise-opacity: 0.03;
+  --scanline-speed: 8s;
+}
+
+/* ===== Base Styles ===== */
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
   body {
-    @apply bg-dark-primary text-gray-200 antialiased;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-feature-settings: "liga" 1, "calt" 1;
+  }
+
+  ::selection {
+    background: rgba(0, 255, 65, 0.2);
+    color: #e6edf3;
+  }
+
+  /* Links */
+  a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  a:hover {
+    color: var(--accent-green);
   }
 }
 
+/* ===== Scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-primary) var(--bg-primary);
+}
+
+/* ===== Animated Grid Background ===== */
+.bg-grid {
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--grid-color) 1px, transparent 0);
+  background-size: var(--grid-size) var(--grid-size);
+}
+
+.bg-grid-dense {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(0, 255, 65, 0.06) 1px, transparent 0);
+  background-size: 16px 16px;
+}
+
+/* ===== Noise / Grain Texture Overlay ===== */
+.noise-overlay::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: var(--noise-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ===== Scanline Overlay ===== */
+.scanline-overlay::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(0, 255, 65, 0.08),
+    transparent
+  );
+  animation: scan-line var(--scanline-speed) linear infinite;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ===== Utility Classes ===== */
 @layer utilities {
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r;
   }
+
+  .text-gradient-green {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #00ff41, #58a6ff);
+  }
+
+  .text-gradient-blue-orange {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #58a6ff, #f0883e);
+  }
 }
 
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+/* ===== Glass Card ===== */
+.glass {
+  background: rgba(13, 17, 23, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
 }
 
-.animate-blink {
-  animation: blink 1s step-end infinite;
+.glass:hover {
+  background: rgba(22, 27, 34, 0.8);
+  border-color: var(--border-primary);
 }
 
-@keyframes bounce-slow {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(8px); }
+/* ===== Terminal Border ===== */
+.terminal-border {
+  border: 1px solid rgba(0, 255, 65, 0.2);
+  border-radius: 8px;
+  box-shadow:
+    0 0 10px rgba(0, 255, 65, 0.05),
+    inset 0 0 10px rgba(0, 255, 65, 0.02);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.animate-bounce-slow {
-  animation: bounce-slow 2s ease-in-out infinite;
+.terminal-border:hover {
+  border-color: rgba(0, 255, 65, 0.4);
+  box-shadow:
+    0 0 20px rgba(0, 255, 65, 0.1),
+    inset 0 0 20px rgba(0, 255, 65, 0.03);
+}
+
+/* ===== GitHub Card ===== */
+.github-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 6px;
+  padding: 1.5rem;
+  transition: background 0.2s ease, border-color 0.3s ease, transform 0.2s ease;
+}
+
+.github-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-primary);
+  transform: translateY(-2px);
+}
+
+/* ===== Glow Effects ===== */
+.glow-green {
+  text-shadow: 0 0 6px rgba(0, 255, 65, 0.6), 0 0 14px rgba(0, 255, 65, 0.3);
+}
+
+.glow-green-box {
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.3), 0 0 30px rgba(0, 255, 65, 0.1);
+}
+
+.glow-blue {
+  text-shadow: 0 0 6px rgba(88, 166, 255, 0.6), 0 0 14px rgba(88, 166, 255, 0.3);
+}
+
+.glow-blue-box {
+  box-shadow: 0 0 15px rgba(88, 166, 255, 0.3), 0 0 30px rgba(88, 166, 255, 0.1);
+}
+
+/* ===== Terminal Text Effects ===== */
+.terminal-text {
+  font-family: "JetBrains Mono", "IBM Plex Mono", monospace;
+  color: var(--accent-green);
+  text-shadow: 0 0 4px rgba(0, 255, 65, 0.4);
+}
+
+.terminal-prompt::before {
+  content: "$ ";
+  color: var(--accent-green);
+  opacity: 0.7;
+}
+
+.typing-cursor::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  background: var(--accent-green);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink-caret 0.75s step-end infinite;
+}
+
+/* ===== Keyframes ===== */
+@keyframes blink-caret {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    text-shadow: 0 0 4px rgba(0, 255, 65, 0.4), 0 0 11px rgba(0, 255, 65, 0.2);
+  }
+  50% {
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.8), 0 0 22px rgba(0, 255, 65, 0.4);
+  }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes grid-fade {
+  0% { opacity: 0.3; }
+  100% { opacity: 0.8; }
+}
+
+@keyframes typing {
+  0% { width: 0; }
+  100% { width: 100%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes branch-grow {
+  0% { height: 0; opacity: 0; }
+  100% { height: 100%; opacity: 1; }
+}
+
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.4); }
+  50% { box-shadow: 0 0 0 12px rgba(0, 255, 65, 0); }
+}
+
+/* ===== Animation Utilities ===== */
+.animate-blink-caret {
+  animation: blink-caret 0.75s step-end infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-grid-fade {
+  animation: grid-fade 4s ease-in-out infinite alternate;
+}
+
+.animate-branch-grow {
+  animation: branch-grow 1.5s ease-out forwards;
 }
