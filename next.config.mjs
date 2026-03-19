@@ -8,6 +8,13 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "react/compiler-runtime": false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

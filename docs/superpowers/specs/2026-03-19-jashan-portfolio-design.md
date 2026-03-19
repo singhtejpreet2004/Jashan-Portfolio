@@ -74,6 +74,7 @@ A single-page scroll portfolio website for Jashan Gupta, a Data Analyst. The sit
 - Large bold name: "JASHAN GUPTA"
 - Terminal-style tagline with blinking cursor: `$ Translating complex data into clear, actionable business recommendations_|`
 - Subtle animated particle grid background (canvas or CSS)
+- Resume PDF download button in navbar (sourced from Sanity `resumeFile`)
 - Scroll-down bounce indicator at bottom
 - **Animations:** Name reveals letter-by-letter, label fades from above, tagline types out, all sequenced
 
@@ -102,7 +103,7 @@ A single-page scroll portfolio website for Jashan Gupta, a Data Analyst. The sit
 - Vertical gradient timeline line (teal → indigo → amber)
 - Timeline dots pulse on scroll into view
 - Each project: date, title, description, tech tags, GitHub link
-- Click/hover expands project card to show full details
+- Click expands project card to show full details (works on both desktop and mobile)
 - **Animation:** Cards fade + scale in on scroll, dots pulse
 
 ### 6. Research & Certifications (Light: #fafafa)
@@ -226,7 +227,7 @@ jashan-portfolio/
 ### experience
 - `company`: string
 - `role`: string
-- `period`: object { start: date, end: date }
+- `period`: object { start: date, end: date } — display as "MMM YYYY"
 - `achievements`: array of strings
 - `order`: number
 
@@ -304,7 +305,7 @@ transition: { type: "spring", stiffness: 200 }
 
 Request body: `{ name: string, email: string, message: string }`
 
-Validation: Zod schema, rate limiting via simple in-memory store.
+Validation: Zod schema. No rate limiting needed for a portfolio contact form.
 
 Sends email via Resend SDK to Jashan's email address (from env var).
 
